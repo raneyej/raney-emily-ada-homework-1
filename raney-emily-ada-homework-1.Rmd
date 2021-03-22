@@ -1,0 +1,97 @@
+library(readr)
+library(curl)
+f <- curl("https://raw.githubusercontent.com/difiore/ada-2021-datasets/main/darwin.txt")
+read.delim(f, header = FALSE, sep = "\n", col.names = FALSE)
+oos_pgphs <- read_tsv("https://raw.githubusercontent.com/difiore/ada-2021-datasets/main/darwin.txt")
+oos_pgphs
+number_pgs <- nrow(oos_pgphs)
+print(number_pgs)
+# Reading the data set as a tsv file yields a tibble with 56 rows. Each paragraph in the file is one row, so there are 56 chapters in the final chapter of On the Origin of Species, not including the title. 
+library(dplyr)
+pgph_tf <- oos_pgphs[34, 1]
+print(pgph_tf)
+# this prints paragraph 34, which starts with "The fact, as we have seen..."
+library(stringr)
+split <- str_split(oos_pgphs, " ")
+split
+str(split)
+# there are 11,400 words in this vector
+sort(table(split), decreasing = TRUE) [1]
+# the most common word is 'the'; it appears 717 times
+df <- as.data.frame(split)
+df
+library(data.table)
+oos_words <- table(split)
+oos_words
+once <- names(oos_words)[oos_words == 1]
+once
+# there are 1576 words that appear only once
+five <- names(oos_words)[oos_words >= 5]
+five
+# there are 333 words that appear at least five times
+final_quote <- oos_pgphs[56, 1]
+final_quote
+split_quote <- str_split(final_quote, " ")
+split_quote
+vect_fq <- unlist(split_quote)
+vect_fq
+third_el <- vect_fq[seq(3, length(vect_fq), 3)]
+third_el
+sort(third_el, decreasing = TRUE)
+# challenge two
+t <- c(35, 88, 42, 84, 81, 30)
+city <- c("Beijing", "Lagos", "Paris", "RioDeJaneiro", "SanJuan", "Toronto")
+avg_high <- rbind(city, t)
+avg_high
+colnames(avg_high)
+rownames(avg_high)
+avg_high[1:6]
+# temperatures of the first three cities on the list
+avg_high[c(5, 6, 9, 10)]
+# temperatures of Paris and San Juan
+# challenge three
+m1 <- matrix(
+  data = c(159:0), 
+           nrow = 8, 
+           ncol = 20,
+  byrow = FALSE
+)
+m1
+m1[5, 2]
+m1[5:7, ]
+m2 <- m1[3:6, 4:9]
+m2
+class(m2)
+mode(m2)
+# the class of m2 is matrix, and the mode is numeric
+# challenge 4
+d <- c(800:2, by = 2)
+a <- array(data = d, dim = c(4, 4, 5, 5))
+a
+a[1, 1, 1, 2]
+a[2, 3, 2, ]
+a[1:5, 1:5, 3, 3]
+# challenge 5
+Superfamily_Lorisoidea <- c("Lorisidae", "Galagidae")
+Superfamily_Lemuroidea <- c("Cheirogaleidae", "Lepilemuridae", "Indriidae", "Lemuridae", "Daubentoniidae")
+Superfamily_Tarsioidea <- c("Tarsiidae")
+Superfamily_Ceboidea <- c("Cebidae", "Atelidae", "Pitheciidae")
+Superfamily_Hominoidea <- c("Hylobatidae", "Hominidae")
+Superfamily_Cercopithecoidea <- c("Cercopithecidae")
+Infraorder_Lorisiformes <- list(Superfamily_Lorisoidea)
+Infraorder_Lemuriformes <- list(Superfamily_Lemuroidea)
+Infraorder_Tarsiiformes <- list(Superfamily_Tarsioidea)
+Parvorder_Platyrrhini <- list(Superfamily_Ceboidea)
+Parvorder_Catarrhini <- list(Superfamily_Hominoidea, Superfamily_Cercopithecoidea)
+Infraorder_Simiiformes <-list(Parvorder_Platyrrhini, Parvorder_Catarrhini)
+Suborder_Strepsirrhini <- list(Infraorder_Lorisiformes, Infraorder_Lemuriformes)
+Suborder_Haplorrhini <- list(Infraorder_Tarsiiformes, Infraorder_Simiiformes)
+Order_Primates <- list(Suborder_Strepsirrhini, Suborder_Haplorrhini)
+str(Order_Primates)
+Order_Primates
+platyrrhines <- Order_Primates[[2]][[2]][[1]]
+platyrrhines
+class(platyrrhines)
+# the variable "platyrrhines" is a list
+tarsiers <- Order_Primates$Tarsiidae
+tarsiers
